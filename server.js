@@ -2,8 +2,20 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
-const port = 3000;
+require('dotenv').config({
+    path: `./config.env`,
+});
+
+const {
+    HOST,
+    PORT,
+    MONGO_HOST,
+    MONGO_PORT,
+    MONGO_DB_NAME
+} = process.env;
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -23,4 +35,12 @@ app.use(routes);
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
-app.listen(port, () => console.log(`app listening on port ${port}!`));
+app.listen(PORT, HOST, async () => {
+    console.log(`Server is running on: ${HOST}:${PORT}`);
+
+    mongoose.Promise = global.Promise;
+    await mongoose.connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}`, {
+        dbName: MONGO_DB_NAME,
+    });
+    console.log('Server connected to db');
+});
