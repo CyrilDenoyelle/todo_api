@@ -2,6 +2,10 @@ const express = require('express');
 
 const router = express.Router();
 
-router.get('/', (req, res) => res.send('Hello Todos!'));
+const {
+    list,
+} = require('../controllers/todoController');
+
+router.get('/', list);
 
 module.exports = router;
